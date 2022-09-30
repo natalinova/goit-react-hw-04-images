@@ -1,37 +1,37 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Modal from './Modal';
 import './styles.css'
 
 
-export default class ImageGalleryItem extends Component {
-    state = {
-    showModal:false
-    }
-    toggleModal = () => {
-       this.setState(({showModal}) => ({
-           showModal: !showModal
-       }))
+export default function ImageGalleryItem(id, previewURL, largeImageURL) {
+  console.log(id)
+  console.log(previewURL)
+  console.log(largeImageURL)
+  const [showModal, setShowModal] = useState(false)
+    
+    const toggleModal = () => {
+       setShowModal(!showModal)
      }
-  render() {
+  
       return (
         <>
               <li
-                  className='ImageGalleryItem' key={this.props.id}>
+                  className='ImageGalleryItem' key={id}>
                   <img
-                      className='ImageGalleryItem-image' src={this.props.previewURL} alt='' onClick={this.toggleModal} />
+                      className='ImageGalleryItem-image' src={id.previewURL} alt='' onClick={toggleModal} />
                 </li>
-              {this.state.showModal && (
-                  <Modal OnClose={this.toggleModal}> 
+              {showModal && (
+                  <Modal OnClose={toggleModal}> 
                     <img className='ModalImage'
-                        src={this.props.largeImageURL}
+                        src={id.largeImageURL}
                         alt=''
                         loading = "lazy"/>
                      <button
                           className='ModalButton'
                           type="button"
-                          onClick={this.toggleModal}> Close modal</button>
+                          onClick={toggleModal}> Close modal</button>
                   </Modal>)} 
         </>
     )
-  }
+ 
 }

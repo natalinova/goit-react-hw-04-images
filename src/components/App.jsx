@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchBar from "./SearchBar";
 import axios from 'axios';
 import Button from './Button';
@@ -6,6 +6,7 @@ import ImageGallery from './ImageGallery';
 import Loader from './Loader';
 
 const Search = async (page, query) => {
+  
     const result = await axios.get(`https://pixabay.com/api/?key=29442705-65f5f0476d101e3a0092bd469&q=${query}&image_type=photo&orientation=horizontal&page=${page}&per_page=12`)
     const dataImage = result.data.hits;
     if (dataImage.length === 0) {
@@ -15,54 +16,53 @@ const Search = async (page, query) => {
         return dataImage
     }
 
-export class App extends Component {
-   state = {
-        image:[],
-        page:1,
-        error: null,
-     status: 'idle',
-     query: ''
-   }
-  componentDidUpdate(prevProps, prevState) {
-        const {page} = this.state
-        const nextQuery = this.state.query
-        if (page !== prevState.page) {
-          this.fetchImage(page, nextQuery)
-        }
-  }
+export function App() {
+  const [image, setImage] = useState([]);
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState('idle');
+  const [query, setQuery] = useState('')
+   
+  useEffect(() => {
+    fetchImage(page, query)
+  },[page, query])
 
-async fetchImage(page, query) {
+
+const fetchImage = async (page, query) => {
        
         try {   
-          this.setState({ status: 'pending' });
+          setStatus( 'pending' );
           const data = await Search(page, query);
-         
-            this.setState(({ image }) => { return { image: [...image, ...data] } });
-            this.setState({ status: 'resolved' });
+          console.log(data);
+          console.log(image)
+          setImage([...image, ...data]);
+          console.log(image)
+          
+            setStatus('resolved' );
         }
 
         catch (error){
         
-          this.setState({ error: `Not any images with key word ${query}`, status: 'rejected' });
+          setError(`Not any images with key word ${query}` )
+            setStatus('rejected');
   }
 }
 
-  LoadMore = () => {  
-    this.setState(({ page }) => { return { page: page + 1 } })
+  const LoadMore = () => {  
+    setPage( page + 1)
   }
   
-  handleFormSubmit = query => {
-      this.setState({ query: query, image: [], page: 1 });
-      const { page } = this.state;
-    this.fetchImage(page, query)
+  const handleFormSubmit = query => {
+    setQuery( query);
+    setImage([]);
+    setPage(1)
+    fetchImage(page, query)
   }
-  render() {
-     const { status, image, error } = this.state;
+ 
     return(
         <div>
         <SearchBar
-          clearData={this.clearImage}
-          onSubmit={this.handleFormSubmit} />
+          onSubmit={handleFormSubmit} />
              {(status === 'idle') && <div className='IdleMessage'> Do you want to find  some images? </div>}
 
         {(status === 'pending') &&
@@ -82,9 +82,9 @@ async fetchImage(page, query) {
             <ImageGallery
                array={image}
             />
-            <Button onClick={ this.LoadMore} />
+            <Button onClick={ LoadMore} />
           </>}    
       </div>
     )
-  }
+  
 }
