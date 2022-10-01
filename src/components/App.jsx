@@ -8,7 +8,9 @@ import Loader from './Loader';
 const Search = async (page, query) => {
   
     const result = await axios.get(`https://pixabay.com/api/?key=29442705-65f5f0476d101e3a0092bd469&q=${query}&image_type=photo&orientation=horizontal&page=${page}&per_page=12`)
-    const dataImage = result.data.hits;
+  const dataImage = result.data.hits;
+  console.log(query)
+  console.log(dataImage)
     if (dataImage.length === 0) {
         return Promise.reject(new Error(` Not any images with key word ${query}`))
     }
@@ -21,12 +23,16 @@ export function App() {
   const [page, setPage] = useState(1);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState('idle');
-  const [query, setQuery] = useState('')
-   
-  useEffect(() => {
-    fetchImage(page, query)
-  },[page, query])
+  const [query, setQuery] = useState('');
 
+  useEffect(() => {
+    if (query === '') {
+      return
+    }
+    fetchImage(page, query)
+  // eslint-disable-next-line
+  },[page, query]
+  )
 
 const fetchImage = async (page, query) => {
        
@@ -64,7 +70,6 @@ const fetchImage = async (page, query) => {
         <SearchBar
           onSubmit={handleFormSubmit} />
              {(status === 'idle') && <div className='IdleMessage'> Do you want to find  some images? </div>}
-
         {(status === 'pending') &&
           <>
           <ImageGallery

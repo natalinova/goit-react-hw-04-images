@@ -17,7 +17,9 @@ const [query, setQuery] = useState('')
             alert('Add yuor query, please');
             return
         }
-      onSubmit(query); 
+      onSubmit(query);
+      console.log(query
+      )
       setQuery( '' )
     }
     

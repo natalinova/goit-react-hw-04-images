@@ -3,10 +3,7 @@ import Modal from './Modal';
 import './styles.css'
 
 
-export default function ImageGalleryItem(id, previewURL, largeImageURL) {
-  console.log(id)
-  console.log(previewURL)
-  console.log(largeImageURL)
+export default function ImageGalleryItem({ id, previewURL, largeImageURL }) {
   const [showModal, setShowModal] = useState(false)
     
     const toggleModal = () => {
@@ -18,12 +15,12 @@ export default function ImageGalleryItem(id, previewURL, largeImageURL) {
               <li
                   className='ImageGalleryItem' key={id}>
                   <img
-                      className='ImageGalleryItem-image' src={id.previewURL} alt='' onClick={toggleModal} />
+                      className='ImageGalleryItem-image' src={previewURL} alt='' onClick={toggleModal} />
                 </li>
               {showModal && (
                   <Modal OnClose={toggleModal}> 
                     <img className='ModalImage'
-                        src={id.largeImageURL}
+                        src={largeImageURL}
                         alt=''
                         loading = "lazy"/>
                      <button
